@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="utf8" collation="utf8_general_ci">todo</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="direct" view="standard">
+<left>18</left>
+<top>56</top>
+<width>210</width>
+<height>112</height>
+<sql_create_table>CREATE TABLE `direct` (
+  `pid` varchar(20) NOT NULL,
+  `login_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`pid`,`login_name`),
+  CONSTRAINT `direct_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `person` (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+<table name="person" view="standard">
+<left>263</left>
+<top>82</top>
+<width>238</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `person` (
+  `pid` varchar(20) NOT NULL,
+  `name` varchar(15) NOT NULL,
+  `head_sculpture` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+<table name="list" view="colnames">
+<left>525</left>
+<top>162</top>
+<width>105</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `list` (
+  `lid` varchar(20) NOT NULL,
+  `pid` varchar(20) DEFAULT NULL,
+  `name` varchar(30) NOT NULL,
+  PRIMARY KEY (`lid`),
+  KEY `pid` (`pid`),
+  CONSTRAINT `list_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `person` (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+<table name="task" view="standard">
+<left>31</left>
+<top>211</top>
+<width>208</width>
+<height>248</height>
+<sql_create_table>CREATE TABLE `task` (
+  `tid` varchar(20) NOT NULL,
+  `pid` varchar(20) DEFAULT NULL,
+  `lid` varchar(20) DEFAULT NULL,
+  `content` text,
+  `found_time` datetime NOT NULL,
+  `start_time` datetime NOT NULL,
+  `deadline` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `my_day` tinyint(1) NOT NULL,
+  `important` tinyint(1) NOT NULL,
+  PRIMARY KEY (`tid`),
+  KEY `pid` (`pid`),
+  KEY `lid` (`lid`),
+  CONSTRAINT `task_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `person` (`pid`),
+  CONSTRAINT `task_ibfk_2` FOREIGN KEY (`lid`) REFERENCES `list` (`lid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+<table name="step" view="standard">
+<left>446</left>
+<top>299</top>
+<width>208</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `step` (
+  `sid` varchar(20) NOT NULL,
+  `tid` varchar(20) NOT NULL,
+  `content` text NOT NULL,
+  `number` tinyint(4) NOT NULL,
+  `found_time` datetime NOT NULL,
+  `end_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`sid`),
+  KEY `tid` (`tid`),
+  CONSTRAINT `step_ibfk_1` FOREIGN KEY (`tid`) REFERENCES `task` (`tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
