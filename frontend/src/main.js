@@ -18,6 +18,8 @@ import {
   Row,
   Col,
   Avatar,
+  Menu,
+  MenuItem,
 } from 'element-ui';
 
 Vue.config.productionTip = false
@@ -34,6 +36,8 @@ Vue.use(DropdownMenu)
 Vue.use(Row)
 Vue.use(Col)
 Vue.use(Avatar)
+Vue.use(Menu)
+Vue.use(MenuItem)
 
 new Vue({
   router,

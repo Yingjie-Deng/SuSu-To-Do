@@ -2,6 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Test from '../components/test.vue'
 import Home from '../components/Home'
+import Ha from '../components/Ha.vue'
+// 引入任务相关的组件
+import Myday from '../components/task/Myday.vue'
+import Import from '../components/task/Import.vue'
+import Ppf from '../components/task/Ppf.vue'
 
 Vue.use(VueRouter)
 
@@ -19,15 +24,15 @@ const routes = [
   //   // which is lazy-loaded when the route is visited.
   //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   // }
+  { path: '/', name: 'root', component: Ha },
+  { path: '/todo', name: 'Test', component: Test },
   {
-    path: '/',
-    name: 'Test',
-    component: Test
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    component: Home
+    path: '/todo/home', component: Home, redirect: '/todo/myday',
+    children: [
+      { path: '/todo/myday', component: Myday },
+      { path: '/todo/import', component: Import },
+      { path: '/todo/ppf', component: Ppf },
+    ]
   }
 ]
 

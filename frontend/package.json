@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "SuSu To-Do",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "babel-plugin-component": "^1.1.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "vue": "^2.6.11",

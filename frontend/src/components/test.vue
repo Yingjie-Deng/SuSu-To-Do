@@ -1,13 +1,19 @@
 <template>
   <div class="container">
     <h1>title</h1>
-    <div>body</div>
+    <div>body
+      <el-button type="success" plain @click="toHomeHandler">去home</el-button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-
+methods: {
+  toHomeHandler() {
+    this.$router.push('todo/home');
+  }
+}
 }
 </script>
 
