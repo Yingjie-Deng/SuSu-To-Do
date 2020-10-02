@@ -1,8 +1,16 @@
 <IfModule mod_rewrite.c>
 RewriteEngine on
 #RewriteBase /todo
+RewriteCond %{REQUEST_URI} ^/todo/susu/(.*)$
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-#RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
-RewriteRule . ./view/dist/index.html [L]
+RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . ./application/views/index.html [L]
+
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+#RewriteRule . ./view/dist/index.html [L]
 </IfModule>

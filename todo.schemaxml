@@ -13,6 +13,7 @@
 <sql_create_table>CREATE TABLE `direct` (
   `pid` varchar(20) NOT NULL,
   `login_name` varchar(50) NOT NULL,
+  `password` varchar(20) NOT NULL,
   PRIMARY KEY (`pid`,`login_name`),
   CONSTRAINT `direct_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `person` (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
@@ -51,12 +52,12 @@
 <sql_create_table>CREATE TABLE `task` (
   `tid` varchar(20) NOT NULL,
   `pid` varchar(20) DEFAULT NULL,
-  `lid` varchar(20) DEFAULT NULL,
+  `lid` varchar(20) DEFAULT 'all_001',
   `content` text,
   `found_time` datetime NOT NULL,
   `start_time` datetime NOT NULL,
   `deadline` datetime DEFAULT NULL,
-  `end_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT '0000-00-00 00:00:00',
   `my_day` tinyint(1) NOT NULL,
   `important` tinyint(1) NOT NULL,
   PRIMARY KEY (`tid`),

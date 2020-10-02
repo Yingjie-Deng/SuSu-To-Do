@@ -32,6 +32,7 @@ const routes = [
       { path: '/todo/myday', component: Myday },
       { path: '/todo/import', component: Import },
       { path: '/todo/ppf', component: Ppf },
+      { path: '/todo/search', component: Ppf}
     ]
   }
 ]

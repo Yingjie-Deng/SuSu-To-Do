@@ -20,6 +20,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  Card,
 } from 'element-ui';
 
 Vue.config.productionTip = false
@@ -38,6 +39,7 @@ Vue.use(Col)
 Vue.use(Avatar)
 Vue.use(Menu)
 Vue.use(MenuItem)
+Vue.use(Card)
 
 new Vue({
   router,

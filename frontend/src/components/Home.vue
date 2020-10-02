@@ -9,7 +9,7 @@
       </el-row>
       <!--头像和用户信息栏 -->
       <el-row class="avatar">
-        <el-col :span="20" class="avatarInfo">
+        <el-col :span="20" class="avatarInfo" @click.native="clickPersonInfo">
           <el-avatar
             :size="35"
             src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
@@ -22,12 +22,30 @@
             <h6 class="loginmark">LXTHLD@Outlook.com</h6>
           </div>
         </el-col>
-        <el-col :span="4" class="search">
+        <el-col :span="4" class="search" @click.native="clickSearch">
           <i class="el-icon-search"></i>
         </el-col>
       </el-row>
+      <!-- 用户信息的Card -->
+      <el-card class="showPerson-card" v-if="showPerson">
+        <ul>
+          <li>
+            <i class="el-icon-user"></i>
+            <p>管理账户</p>
+          </li>
+          <li @click="clickSetting">
+            <i class="el-icon-setting"></i>
+            <p>设置</p>
+          </li>
+        </ul>
+      </el-card>
       <!-- 菜单栏 -->
-      <el-menu default-active="/todo/myday" class="el-menu-vertical-demo" router="true">
+      <el-menu
+        default-active="/todo/myday"
+        class="el-menu-vertical-demo"
+        background-color="#fbfcfe"
+        :router="true"
+      >
         <el-menu-item index="/todo/myday">
           <i class="el-icon-sunny" style="color: #586570"></i>
           <span slot="title">我的一天</span>
@@ -62,9 +80,23 @@
 
 <script>
 export default {
+  data() {
+    return {
+      showPerson: false,
+    };
+  },
   methods: {
     errorHandler() {
       return true;
+    },
+    clickPersonInfo() {
+      this.showPerson = !this.showPerson;
+    },
+    clickSearch() {
+      this.$router.push("search");
+    },
+    clickSetting() {
+      this.$router.push({ path: "setting" });
     },
   },
 };
@@ -93,17 +125,58 @@ export default {
   font-size: 12px;
 }
 .avatarInfo {
+  cursor: pointer;
   &:hover {
     background: rgb(250, 251, 252);
   }
 }
 .search {
-  display: flex;
-  justify-content: center;
-  align-content: center;
   height: 39px;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background-color: #fafbfc;
+  }
   .el-icon-search {
+    padding: 0;
     font-size: 16px;
+    line-height: 39px;
+  }
+}
+.showPerson-card {
+  position: absolute;
+  left: 15px;
+  top: 90px;
+  width: 260px;
+  z-index: 10;
+  box-shadow: 4px 10px 14px #bbb, 0px 0px 8px -4px #aaa !important;
+  /deep/ .el-card__body {
+    padding: 0;
+  }
+  ul {
+    list-style-type: none;
+    li {
+      padding: 15px;
+      cursor: pointer;
+      i {
+        font-size: 16px;
+      }
+      p {
+        margin-left: 12px;
+        display: inline-block;
+      }
+    }
+    li:first-child {
+      border-bottom: 1px solid #ddd;
+    }
+    li:hover {
+      background: #f5f6f7;
+    }
+  }
+}
+.el-menu-item {
+  &:hover {
+    background: #f4f1f1 !important;
   }
 }
 </style>
