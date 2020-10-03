@@ -3,7 +3,7 @@
  * 测试用
  * 框架开发过程中用于测试模型功能实现情况
  */
-class TestController
+class TestController extends Controller
 {
     public function haha()
     {
@@ -24,7 +24,7 @@ class TestController
     public function select() {
       $model = new Mysql($GLOBALS['config']['db']);
       $res = $model->getAll([
-        'from' => 'myday',
+        'from' => 'task',
       ]);
       $response = $GLOBALS['config']['res'];
       $response['data'] = $res;
@@ -58,9 +58,9 @@ class TestController
     public function ins2()
     {
         $param = file_get_contents('php://input');
-    
+        var_dump($param);
         $param = json_decode($param, true);
-        // var_dump($param);
+        var_dump($param);
         $Model = new Model('task');
         $list = $Model->preprocess($param);
         isset($list['my_day']) ? $list['my_day'] = $param['my_day'] : '';
@@ -85,5 +85,20 @@ class TestController
       echo $model->delete([
         'tid' => ''
       ]);
+    }
+
+    public function getjwt() {
+      echo $this->getToken([
+        'iss'=>'admin','iat'=>time(),
+        'exp'=>time()+7200,
+        'nbf'=>time(),
+        'sub'=>'www.admin.com',
+        'jti'=>md5(uniqid('JWT').time())
+      ]);
+    }
+
+    public function verify() {
+      $hah =  $this->verifyToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTYwMTY1NDMxMCwiZXhwIjoxNjAxNjYxNTEwLCJuYmYiOjE2MDE2NTQzMTAsInN1YiI6Ind3dy5hZG1pbi5jb20iLCJqdGkiOiJlYjJlZWRhOWE1YTdhZTk1YWJhYmRiZjY0Mzk1NWY2ZCJ9.3w5AWGKdjfnPyPW13IWN-D13FQrm-o29MQ8egbz7vJc');
+      var_dump($hah);
     }
 }

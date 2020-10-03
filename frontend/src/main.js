@@ -4,6 +4,17 @@ import router from './router'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/globle.css'
+// 引入axios
+import axios from 'axios'
+// 配置请求的根路径
+axios.defaults.baseURL = 'http://localhost/todo/susu/';
+// 配置自动携带authorization
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = window.localStorage.getItem('token');
+  return config;
+})
+
+Vue.prototype.$http = axios;
 import { 
   Button,
   Select,
@@ -21,8 +32,13 @@ import {
   Menu,
   MenuItem,
   Card,
+  Form,
+  FormItem,
+  Input,
+  Message,
 } from 'element-ui';
 
+Vue.prototype.$message = Message;
 Vue.config.productionTip = false
 Vue.use(Button)
 Vue.use(Select)
@@ -40,6 +56,9 @@ Vue.use(Avatar)
 Vue.use(Menu)
 Vue.use(MenuItem)
 Vue.use(Card)
+Vue.use(Input)
+Vue.use(FormItem)
+Vue.use(Form)
 
 new Vue({
   router,

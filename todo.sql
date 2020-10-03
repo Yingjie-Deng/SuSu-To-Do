@@ -62,6 +62,11 @@ DROP VIEW IF EXISTS personInfo;
 -- 修改task表的lid字段默认值为all_001
 ALTER TABLE `task` CHANGE COLUMN `lid` `lid` VARCHAR(20) DEFAULT 'all_001';
 
+-- 
+ALTER TABLE `person` CHANGE COLUMN `pid` `pid` VARCHAR(50) PRIMARY KEY;
+DESC LIST;
+ALTER TABLE `list` CHANGE COLUMN `lid` `lid` VARCHAR(150) PRIMARY KEY;
+
 -- -------------------------------------------
 -- 创建“重要”视图
 CREATE VIEW important
@@ -154,7 +159,7 @@ VALUES(
 );
 
 SELECT *
-FROM task
+FROM direct
 DELETE 
 FROM LIST
 SELECT *

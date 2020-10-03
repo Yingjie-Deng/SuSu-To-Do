@@ -58,7 +58,7 @@ class Model {
     $value_list = rtrim($value_list, ',');
     
     // 拼接SQL语句
-    $sql = "INSERT INTO `{$this->table}`({$field_list}) VALUELS ({$value_list})";
+    $sql = "INSERT INTO `{$this->table}`({$field_list}) VALUES ({$value_list})";
     return $this->db->query($sql);
   }
 

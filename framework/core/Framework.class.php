@@ -21,7 +21,7 @@ class Framework
         define('VIEW_PATH', APP_PATH . 'views' . DS);
         define('CORE_PATH', FRAMEWORK_PATH . 'core' . DS);
         define('DB_PATH', FRAMEWORK_PATH . 'database' . DS);
-        define('INDEX_PATH', VIEW_PATH . 'dist' . DS . 'index.html');
+        define('LIB_PATH', FRAMEWORK_PATH . 'libraries' . DS);
 
         // 加载核心类文件
         require CORE_PATH . 'Controller.class.php';
@@ -30,6 +30,9 @@ class Framework
 
         // 加载配置文件
         $GLOBALS['config'] = include CONFIG_PATH . 'config.php';
+
+        // 加载Jwt鉴权库
+        require LIB_PATH . 'jwt.php';
     }
     private static function autoload()
     {
@@ -65,14 +68,16 @@ class Framework
         
         if (!file_exists(CONTROLLER_PATH . "$controller_name.class.php")) {
             // 重定向
-            $BaseController = new Controller();
-            $BaseController->redirect("http://localhost/todo/home");
+            // $BaseController = new Controller();
+            // $BaseController->redirect("http://localhost/todo/home");
+            Controller::redirect("http://localhost/todo/home");
         } else {
             $controller = new $controller_name;
             if (!method_exists($controller, $action_name)) {
                 // 重定向
-                $BaseController = new Controller();
-                $BaseController->redirect("http://localhost/todo/home");
+                // $BaseController = new Controller();
+                // $BaseController->redirect("http://localhost/todo/home");
+                Controller::redirect("http://localhost/todo/home");
             } else {
                 $controller->$action_name();
             }

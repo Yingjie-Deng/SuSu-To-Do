@@ -3,6 +3,7 @@
     <h1>title</h1>
     <div>body
       <el-button type="success" plain @click="toHomeHandler">去home</el-button>
+      <el-button type="success" plain @click="toRegHandler">去注册</el-button>
     </div>
   </div>
 </template>
@@ -11,7 +12,10 @@
 export default {
 methods: {
   toHomeHandler() {
-    this.$router.push('todo/home');
+    this.$router.push('/todo/home');
+  },
+  toRegHandler() {
+    this.$router.push('/todo/register');
   }
 }
 }

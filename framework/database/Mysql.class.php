@@ -79,14 +79,14 @@ class Mysql
             echo json_encode($res);
             exit();
         }
-        echo $this->sql . '<br>';
+        // echo $this->sql . '<br>';
         return $result;
     }
 
     /**
      * 获取一条记录
      * @access public
-     * @param $sql sql语句
+     * @param mixed $sql sql语句或者关联数组
      * @return array associative array
      */
     public function getRow($sql)
@@ -130,5 +130,26 @@ class Mysql
      */
     private function error() {
       return mysqli_error($this->conn);
+    }
+
+    /**
+     * 提供原生query
+     * @access public
+     * @param string $sql 
+     * @return boolean
+     */
+    public function oriQuery($sql) {
+      $str = $sql . '[' . date("Y-m-d H:i:s") . ']' . PHP_EOL;
+      file_put_contents('log.txt', $str, FILE_APPEND);
+      return mysqli_query($this->conn, $sql);
+    }
+
+    /**
+     * 关闭数据库连接
+     * @access public
+     * @return boolean
+     */
+    public function close() {
+      return mysqli_close($this->conn);
     }
 }

@@ -7,6 +7,8 @@ import Ha from '../components/Ha.vue'
 import Myday from '../components/task/Myday.vue'
 import Import from '../components/task/Import.vue'
 import Ppf from '../components/task/Ppf.vue'
+import Register from '../components/Register.vue'
+import Login from '../components/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -32,9 +34,11 @@ const routes = [
       { path: '/todo/myday', component: Myday },
       { path: '/todo/import', component: Import },
       { path: '/todo/ppf', component: Ppf },
-      { path: '/todo/search', component: Ppf}
+      { path: '/todo/search', component: Ppf }
     ]
-  }
+  },
+  { path: '/todo/register', component: Register },
+  { path: '/todo/login', component: Login },
 ]
 
 const router = new VueRouter({
