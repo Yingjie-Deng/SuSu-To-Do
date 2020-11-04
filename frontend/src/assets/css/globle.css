@@ -1,9 +1,42 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  text-rendering: geometricPrecision;
 }
 html,
 body,
 #app {
   height: 100%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+html,
+input,
+textarea,
+button,
+select {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+body::-webkit-scrollbar {
+  width: 0;
+}
+.task-main {
+  padding: 40px;
+}
+
+.task-detail-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  flex-basis: auto;
+  height: calc(100vh - 2px);
 }

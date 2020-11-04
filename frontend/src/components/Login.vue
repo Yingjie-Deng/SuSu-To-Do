@@ -86,10 +86,14 @@ export default {
       this.$refs['logFormRef'].validate(async (valid) => {
         if (!valid) return;
         const {data: res} = await this.$http.post('reg/login', this.logForm);
-        console.log(res);
+        // console.log(res);
         if (res.meta.status !== 200) return this.$message.error('登录失败');
         this.$message.success('登陆成功');
         window.localStorage.setItem('token', res.data.token);
+        let pre = sessionStorage.getItem('current');
+        if (pre) {
+          return this.$router.push(pre);
+        }
         this.$router.push('/todo/home');
       });
     },

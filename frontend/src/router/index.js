@@ -9,7 +9,6 @@ import Import from '../components/task/Import.vue'
 import Ppf from '../components/task/Ppf.vue'
 import Register from '../components/Register.vue'
 import Login from '../components/Login.vue'
-
 Vue.use(VueRouter)
 
 const routes = [
@@ -44,6 +43,15 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   routes
+})
+
+// 挂载路由导航守卫
+router.beforeEach((to, from, next) => {
+  if (to.path === '/todo/login' || to.path === '/todo/register') return next();
+  // 去其他页面，需要登录，获取token
+  const token = window.localStorage.getItem('token');
+  if (!token) return next('/todo/login');
+  next();
 })
 
 export default router

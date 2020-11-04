@@ -159,11 +159,11 @@ VALUES(
 );
 
 SELECT *
-FROM direct
+FROM person
 DELETE 
 FROM LIST
 SELECT *
-FROM personInfo
+FROM direct
 WHERE pid = 'exam09:47:25';
 SELECT DATE_SUB(CURDATE(),INTERVAL 1 DAY) ;
 SELECT DATE_SUB(CURDATE(), INTERVAL -1 DAY);
@@ -172,6 +172,13 @@ SELECT TIME();
 SELECT * FROM personInfo WHERE pid = 'test09:37:39'
 DESC task
 
+DELETE FROM person
+WHERE NAME = '邓英杰';
+
+DELETE FROM direct
+WHERE pid LIKE '%邓英杰%';
+SELECT pid FROM direct WHERE `login_name`='18608240560' AND `password`='123456';
+SELECT * FROM personInfo WHERE `pid` = 邓英杰1601719731 ORDER BY `login_name` DESC;
 
 
 

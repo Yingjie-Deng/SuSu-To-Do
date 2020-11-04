@@ -75,7 +75,7 @@ class RegController extends Controller {
           'iat' => time(),
           'exp' => time()+7200,
           'nbf' => time(),
-          'sub' => $regInfo['name'],
+          'sub' => $pid,
           'jti' => md5(uniqid('JWT').time())
         ]),
         'pid' => $pid

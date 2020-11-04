@@ -26,7 +26,7 @@
 <sql_create_table>CREATE TABLE `person` (
   `pid` varchar(50) NOT NULL,
   `name` varchar(15) NOT NULL,
-  `head_sculpture` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'http://enpty.com/',
+  `head_sculpture` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'http://localhost/todo/application/views/favicon.ico',
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
 </table>
