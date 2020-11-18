@@ -14,6 +14,7 @@
         reallyPlaceholder = placeholder;
       "
       @keyup.enter="handleEnter"
+      @keyup="handleKeyup"
     />
     <!-- 头部图标 -->
     <span class="prefix">
@@ -47,8 +48,8 @@
       class="list-box-card"
       :style="[isShowList ? { display: 'block' } : { display: 'none' }]"
     >
-      <!-- <div class="item" @click="handleListSelect(defaultItem)">
-        <i class="el-icon-s-home"></i>{{ defaultItem.listName }}
+      <!-- <div class="item" @click="handleListSelect(defaultList)">
+        <i class="el-icon-s-home"></i>{{ defaultList.listName }}
       </div> -->
       <div
         v-for="(item, index) in list"
@@ -134,25 +135,27 @@
 </template>
 
 <script>
+import tools from '../../assets/base'
 export default {
   // model: {
   //   prop: 'value',
   //   event: 'input',
   // },
-  props: ['list', 'placeholder', 'value', 'defaultItem'],
+  props: ['listProp', 'placeholder', 'value', 'defaultList'],
   data() {
     return {
-      d: '',
       textValue: '',
       reallyPlaceholder: this.placeholder,
       // 判断 input 框是否获得焦点
       isfocus: false,
       // 控制清单列表的显示
       isShowList: false,
+      // list 清单
+      list: null,
       // 被激活的清单名
-      activedListName: this.defaultItem.listName,
-      // 被激活的清单 id
-      activedLid: -1,
+      activedListName: this.defaultList.listName,
+      // 被激活的清单 lid
+      activedLid: this.defaultList.lid,
       // 控制日期的显示
       isShowDate: false,
       // 开始时间
@@ -162,7 +165,20 @@ export default {
     };
   },
   created() {
-    console.log(this.list);
+    // 重新加载该组件时，vuex 已经加载完毕并且无新变化，
+    // 侦听器无法为 list 赋值，采取手动为 list 赋值
+    // 把默认的‘任务’清单加入到 list 清单中
+    if (this.listProp) {
+      this.list = this.listProp.map((val) => val);
+      this.list.unshift(this.defaultList);
+    }
+  },
+  watch: {
+    // 侦听 taskList 的异步获取
+    listProp() {
+      this.list = this.listProp.map((val) => val);
+      this.list.unshift(this.defaultList);
+    },
   },
   methods: {
     handleListShow() {
@@ -222,25 +238,37 @@ export default {
           break;
       }
       // 0.5 秒后再关闭
-      setTimeout(() => this.isShowDate = false, 500);
-      
+      setTimeout(() => (this.isShowDate = false), 500);
+
       // console.log(this.deadline);
     },
-    // 回车处理时间（封装数据发回给父组件）
+    // 回车处理事件（封装数据发回给父组件）
     handleEnter() {
       const newItem = {
         lid: this.activedLid,
         content: this.textValue,
-        task: '测试组',
-        complete: false,
-        import: true,
-        start_time: this.start_time ? this.start_time : new Date(),
-        deadline: this.deadline ? this.deadline : new Date().setDate(new Date().getDate() + 1),
+        end_time: '0000-00-00 00:00:00',
+        found_time: tools.dateFormat('YYYY-mm-dd HH:MM:SS', new Date()),
+        start_time: this.start_time
+          ? tools.dateFormat('YYYY-mm-dd HH:MM:SS', new Date(this.start_time))
+          : tools.dateFormat('YYYY-mm-dd HH:MM:SS', new Date()),
+        deadline: this.deadline
+          ? tools.dateFormat('YYYY-mm-dd HH:MM:SS', new Date(this.deadline))
+          : tools.dateFormat(
+              'YYYY-mm-dd',
+              new Date(new Date().setDate(new Date().getDate() + 1))
+            ),
       };
       console.log(newItem);
       this.$emit('keyup-enter', newItem);
-      return this.textValue = '';
-    }
+      this.textValue = '';
+    },
+    handleKeyup() {
+      if (!this.textValue) {
+        this.isShowList = false;
+        this.isShowDate = false;
+      }
+    },
   },
 };
 </script>
@@ -249,7 +277,7 @@ export default {
 .su-input {
   display: flex;
   flex-direction: row;
-  flex: 1;
+  // flex: 1;
   height: 50px;
   position: relative;
   background-color: #77777773;

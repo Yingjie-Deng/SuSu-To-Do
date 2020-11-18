@@ -9,6 +9,8 @@ import './assets/css/globle.css'
 import Item from '@/components/suItem/index.js'
 // 引入Input组件
 import SuInput from '@/components/suInput/index.js'
+// 引入 Button 组件
+import SuButton from '@/components/SuButton.vue'
 // 引入axios
 import axios from 'axios'
 // 配置请求的根路径
@@ -44,6 +46,7 @@ import {
   Radio,
   Tooltip,
   DatePicker,
+  Divider,
 
 } from 'element-ui';
 
@@ -73,17 +76,27 @@ Vue.use(Item)
 Vue.use(SuInput)
 Vue.use(Tooltip)
 Vue.use(DatePicker)
+Vue.use(Divider)
+
+Vue.component('SuButton', SuButton);
 
 // 配置响应拦截器
 axios.interceptors.response.use(response => {
   const { data: res } = response;
-  if (res.meta.status === 401) {
+  // 状态码为 2xx 的响应，更新 token
+  const status = Number.parseInt(res.meta.status / 100);
+  if (status === 2) {
+    window.localStorage.setItem('token', res.data.token);
+  }
+  // const currRoutFull = router.currentRoute.fullPath;
+  // console.log(currRoutFull);
+  if (res.meta.status === 401 && router.currentRoute.fullPath !== '/todo/login') {
     Message({
-      message: '登录失效或未登录',
+      message: '登录失效',
       type: 'warning'
     });
     localStorage.removeItem('token');
-    sessionStorage.setItem('current', router.currentRoute.fullPath);
+    // sessionStorage.setItem('current', router.currentRoute.fullPath);
     router.push('/todo/login');
   }
   return response;

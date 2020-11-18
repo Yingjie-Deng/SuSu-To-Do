@@ -25,11 +25,10 @@
       <div class="import" @click.stop="importToggle(index)">
         <i :class="[item.import ? 'el-icon-star-on' : 'el-icon-star-off']"></i>
       </div>
-      <audio ref="audio">
-        <source src="../../assets/complete.wav" type="audio/wav">
-    </audio>
+      <!-- <audio ref="audio">
+        <source src="../../assets/complete.wav" type="audio/wav" />
+      </audio> -->
     </div>
-    
   </div>
 </template>
 
@@ -39,9 +38,23 @@ export default {
     return {
       oldIndex: -1,
       showDetail: false,
+      // 记录上一次监听到的值
+      oldLinsten: '',
     };
   },
-  props: ['data', 'title', 'other'],
+  props: ['data', 'title', 'other', 'listener'],
+  watch: {
+    listener() {
+      if (
+        this.oldLinsten !== '' &&
+        this.listener.substr(0, 4) !== this.oldLinsten.substr(0, 4)
+      ) {
+        this.oldIndex = -1;
+        this.showDetail = false;
+      }
+      this.oldLinsten = this.listener;
+    },
+  },
   methods: {
     // 自定义事件用于切换未完成/完成
     completeToggle(index, complete) {
@@ -75,9 +88,37 @@ export default {
     // 完成时播放音效
     play(index, complete) {
       if (!complete) {
-        this.$refs.audio[index].play();
+        // const audio = this.$refs.audio;
+        // const body = this.$refs.raudioDiv;
+        // // console.log('body--audio::', body, audio);
+        // body.appendChild(audio);
+        // let raudio = body.getElementsByTagName('audio');
+        // raudio = raudio[raudio.length -1];
+        // raudio.play();
+        // setTimeout(() => {
+        //   const body = this.$refs.raudioDiv;
+        //   const daudio = body.getElementsByTagName('audio')[0];
+        //   // body.removeChild(daudio);
+        //   console.log(daudio);
+        // }, 1200);
+        const body = document.getElementsByTagName('body')[0];
+        const audio = document.createElement('AUDIO');
+        const source = document.createElement('SOURCE');
+        source.setAttribute('src', '/media/complete.22b3e387.wav');
+        source.setAttribute('type', 'audio/wav');
+        audio.appendChild(source);
+        body.appendChild(audio);
+        let raudio = body.getElementsByTagName('audio');
+        raudio = raudio[raudio.length - 1];
+        console.log(raudio);
+        raudio.play();
+        setTimeout(() => {
+          const body = document.getElementsByTagName('body')[0];
+          const daudio = body.getElementsByTagName('audio');
+          body.removeChild(daudio[0]);
+        }, 1200);
       }
-    }
+    },
   },
 };
 </script>
@@ -130,6 +171,7 @@ export default {
     line-height: 60px;
     width: 24px;
     font-size: 24px;
+    text-align: center;
   }
 }
 /** 完成或激活后的样式 -- 删除线、背景 */
@@ -143,5 +185,8 @@ export default {
 /**重要 ‘星’ 的样式，金色 */
 .el-icon-star-on {
   color: #b04365;
+}
+.el-icon-star-off {
+  font-size: 20px;
 }
 </style>

@@ -50,13 +50,13 @@ CREATE TABLE step (
 -- **“重要”同
 CREATE VIEW myday
 AS
-SELECT tid, task.pid, content, important, `list`.`name` AS listName, found_time, deadline, start_time, end_time
+SELECT tid, task.pid, content, important AS `import`, `list`.`name` AS listName, found_time, deadline, start_time, end_time
 FROM task JOIN `list` ON task.lid = `list`.lid
 WHERE my_day = TRUE AND task.`start_time` BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY);
 SELECT CURRENT_TIMESTAMP();
 SELECT CURDATE();
 
-DROP VIEW IF EXISTS personInfo;
+DROP VIEW IF EXISTS myday;
 
 -- ------------------------------
 -- 修改task表的lid字段默认值为all_001

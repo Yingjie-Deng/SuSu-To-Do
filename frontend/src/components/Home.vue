@@ -75,61 +75,19 @@
           <i class="el-icon-s-home" style="color: rgb(92, 112, 190)"></i>
           <span slot="title">任务</span>
         </el-menu-item>
-        <el-menu-item index="/todo/myday">
-          <i class="el-icon-sunny" style="color: #586570"></i>
-          <span slot="title">我的一天</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/import">
-          <i class="el-icon-star-off" style="color: #b04365"></i>
-          <span slot="title">重要</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/ppf">
-          <i class="el-icon-finished" style="color: #418669"></i>
-          <span slot="title">往昔-当下-谜</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/all">
-          <i class="el-icon-menu" style="color: #c8605c"></i>
-          <span slot="title">全部</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/completed">
-          <i class="el-icon-circle-check" style="color: #c8605c"></i>
-          <span slot="title">已完成</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/task">
-          <i class="el-icon-s-home" style="color: rgb(92, 112, 190)"></i>
-          <span slot="title">任务</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/myday">
-          <i class="el-icon-sunny" style="color: #586570"></i>
-          <span slot="title">我的一天</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/import">
-          <i class="el-icon-star-off" style="color: #b04365"></i>
-          <span slot="title">重要</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/ppf">
-          <i class="el-icon-finished" style="color: #418669"></i>
-          <span slot="title">往昔-当下-谜</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/all">
-          <i class="el-icon-menu" style="color: #c8605c"></i>
-          <span slot="title">全部</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/completed">
-          <i class="el-icon-circle-check" style="color: #c8605c"></i>
-          <span slot="title">已完成</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/task">
-          <i class="el-icon-s-home" style="color: rgb(92, 112, 190)"></i>
-          <span slot="title">任务</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/completed">
-          <i class="el-icon-circle-check" style="color: #c8605c"></i>
-          <span slot="title">已完成</span>
-        </el-menu-item>
-        <el-menu-item index="/todo/task">
-          <i class="el-icon-s-home" style="color: rgb(92, 112, 190)"></i>
-          <span slot="title">任务</span>
+      </el-menu>
+
+      <div class="divider"><el-divider></el-divider></div>
+      <!-- 任务清单列表 -->
+      <el-menu
+        :default-active="activeMenu"
+        class="el-menu-vertical-demo"
+        background-color="#fbfcfe"
+        router
+      >
+        <el-menu-item :index="'/todo/lists/' + item.lid" v-for="item in this.$store.state.taskList" :key="item.lid">
+          <i class="el-icon-tickets" style="color: #586570"></i>
+          <span slot="title">{{item.listName}}</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -148,10 +106,13 @@ export default {
         name: '未登录',
         login_name: '登录后显示',
       },
+      taskList: null,
     };
   },
   created() {
     this.loadInfo();
+    // 获取任务清单
+    this.getList();
   },
   methods: {
     errorHandler() {
@@ -172,8 +133,18 @@ export default {
       // console.log(res);
       if (res.meta.status !== 200) return;
       this.personInfo = res.data.pInfo;
-      window.localStorage.setItem('token', res.data.token);
+      // window.localStorage.setItem('token', res.data.token);
       console.log(res);
+    },
+    /**
+     * 获取任务清单
+     */
+    async getList() {
+      const { data: res } = await this.$http.get('tasks/loadList');
+      if (res.meta.status !== 200)
+        return this.$message({ message: '获取任务清单失败！', type: 'error' });
+      this.$store.state.taskList = res.data.list;
+      this.taskList = this.$store.state.taskList;
     },
   },
   computed: {
@@ -204,13 +175,28 @@ export default {
 }
 .el-menu {
   width: 100%;
-  height: 100%;
+  // height: 100%;
+  border: none;
   overflow: auto;
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
   &::-webkit-scrollbar {
     width: 0;
   }
+}
+.divider {
+  margin: 0;
+  padding: 10px 20px;
+  // width: 99%;
+  background-color: #fbfcfe
+}
+.el-divider {
+  margin: 0px;
+  padding: 0;
+  // width: 278px;
+  box-sizing: border-box;
+  background-color: #dddddd
+
 }
 .el-row {
   margin: 10px;

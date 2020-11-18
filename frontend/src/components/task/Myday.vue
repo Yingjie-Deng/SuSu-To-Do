@@ -8,16 +8,39 @@
         </h1>
         <p class="datetime">{{ '日期过滤器' | current }}</p>
       </div>
-
-      <su-item
-        :data="tasks"
-        title="content"
-        other="task"
-        @comp-toggle="complete"
-        @impt-toggle="importToggle"
-        @active="handleActive"
-      ></su-item>
-      <su-input placeholder="添加任务" :list="taskList" @select-lid="handleSelectLid" :default-item="taskList[4]" @keyup-enter="handleEnter"></su-input>
+      <main class="main">
+        <su-item
+          :data="tasks.plan"
+          title="content"
+          other="listName"
+          :listener="listen"
+          @comp-toggle="firstComplete"
+          @impt-toggle="firstImportToggle"
+          @active="handleActive($event, 'plan')"
+        ></su-item>
+        <su-button
+          :count="count"
+          v-if="count"
+          @click.native="isfold = !isfold"
+        ></su-button>
+        <su-item
+          :data="tasks.done"
+          title="content"
+          other="listName"
+          :listener="listen"
+          v-if="!isfold"
+          @comp-toggle="secondComplete"
+          @impt-toggle="secondImportToggle"
+          @active="handleActive($event, 'done')"
+        ></su-item>
+      </main>
+      <su-input
+        placeholder="添加任务"
+        :list-prop="taskList"
+        @select-lid="handleSelectLid"
+        :default-list="defaultList"
+        @keyup-enter="handleEnter"
+      ></su-input>
     </div>
 
     <div class="su-detail" v-if="showDetail">
@@ -28,62 +51,61 @@
 </template>
 
 <script>
+import Subase from '@/assets/base';
 export default {
   data() {
     return {
       showDetail: false,
       oneTask: '',
       oldIndex: -1,
-      tasks: [
-        { content: '早起', task: '任务', complete: true, import: true },
-        {
-          content: '高数',
-          task: '高等数学（专）',
-          complete: true,
-          import: true,
-        },
-        {
-          content: '数据库',
-          task: '数据库（专）',
-          complete: true,
-          import: true,
-        },
-        { content: '语法', task: '英语（专）', complete: false, import: true },
-        { content: '框架', task: 'SuSu To-Do', complete: true, import: true },
-        { content: '早起', task: '任务', complete: false, import: true },
-        { content: '语法', task: '英语（专）', complete: false, import: true },
-        { content: '框架', task: 'SuSu To-Do', complete: true, import: true },
-        { content: '早起', task: '任务', complete: false, import: true },
-        { content: '语法', task: '英语（专）', complete: false, import: true },
-        { content: '框架', task: 'SuSu To-Do', complete: true, import: true },
-        { content: '早起', task: '任务', complete: false, import: true },
-        { content: '语法', task: '英语（专）', complete: false, import: true },
-        { content: '框架', task: 'SuSu To-Do', complete: true, import: true },
-        { content: '早起', task: '任务', complete: false, import: true },
-        { content: '语法', task: '英语（专）', complete: false, import: true },
-        { content: '框架', task: 'SuSu To-Do', complete: true, import: true },
-        { content: '早起', task: '任务', complete: false, import: true },
-      ],
-      taskList: [
-        { lid: '001', listName: '高等数学（专）' },
-        { lid: '002', listName: '数据库（专）' },
-        { lid: '003', listName: '英语（专）' },
-        { lid: '004', listName: 'SuSu To-Do' },
-        { lid: '005', listName: '任务' },
-      ],
+      tasks: { plan: [], done: [] },
+      // taskList: this.$store.state.taskList,
+      // 监听各个item是否打开
+      listen: '',
+
+      // count: this.tasks.done.length,
+      // 控制折叠
+      isfold: false,
     };
   },
+  created() {
+    // 加载任务记录
+    this.loadTasks();
+  },
+  computed: {
+    // 从 vuex 获取清单 list
+    taskList() {
+      return this.$store.state.taskList;
+    },
+    // 获取默认的清单
+    defaultList() {
+      return this.$store.state.defaultList;
+    },
+    // 记录完成任务数量
+    count() {
+      return this.tasks.done.length;
+    },
+  },
   methods: {
-    complete(index) {
-      this.tasks[index].complete = !this.tasks[index].complete;
+    // 任务完成
+    async firstComplete(index) {
+      Subase.complete.call(this, this.tasks.plan, index, this.loadTasks);
     },
-    importToggle(index) {
-      this.tasks[index].import = !this.tasks[index].import;
+    async secondComplete(index) {
+      Subase.complete.call(this, this.tasks.done, index, this.loadTasks);
     },
-    handleActive(index) {
+    // 切换重要性
+    async firstImportToggle(index) {
+      Subase.importToggle.call(this, this.tasks.plan, index, this.loadTasks);
+    },
+    async secondImportToggle(index) {
+      Subase.importToggle.call(this, this.tasks.done, index, this.loadTasks);
+    },
+    handleActive(index, disc) {
+      this.listen = disc + index;
       if (index !== -1) {
         this.showDetail = true;
-        this.oneTask = this.tasks[index].content;
+        this.oneTask = this.tasks[disc][index].content;
       } else {
         this.showDetail = false;
       }
@@ -95,11 +117,44 @@ export default {
       console.log(this.lid);
     },
     // 添加记录事件处理函数
-    handleEnter(newItem) {
-      this.tasks.push(newItem);
-    }
+    async handleEnter(newItem) {
+      newItem.my_day = true;
+      const { data: res } = await this.$http.post('tasks/addTask', newItem);
+      if (res.meta.status !== 201) return this.$message.error('添加任务失败！');
+      this.loadTasks();
+    },
+    // 获取数据
+    async loadTasks() {
+      const { data: res } = await this.$http.get('tasks/myday');
+      // console.log('enter', res);
+      if (res.meta.status !== 200) return this.$message.error('获取数据失败！');
+      const mytasks = res.data.myday_tasks,
+        len = mytasks.length,
+        tasks = { plan: [], done: [] };
+      for (let i = 0; i < len; i++) {
+        if (mytasks[i].end_time === '0000-00-00 00:00:00') {
+          mytasks[i].complete = false;
+        } else {
+          mytasks[i].complete = true;
+        }
+
+        if (mytasks[i].import === '0') {
+          mytasks[i].import = false;
+        } else {
+          mytasks[i].import = true;
+        }
+
+        if (mytasks[i].complete) {
+          tasks.done.push(mytasks[i]);
+        } else {
+          tasks.plan.push(mytasks[i]);
+        }
+      }
+      this.tasks = tasks;
+      // window.localStorage.setItem('token', res.data.token);
+      console.log(this.tasks);
+    },
   },
-  computed: {},
 };
 </script>
 
@@ -121,6 +176,8 @@ export default {
   flex: 1;
   flex-direction: column;
   overflow: auto;
+  height: 100%;
+  position: relative;
   &::-webkit-scrollbar {
     width: 0;
   }
@@ -132,7 +189,8 @@ export default {
 .header {
   flex-shrink: 0;
 }
-.su-item {
+main.main {
+  flex: 1;
   margin-top: 30px;
   width: 100%;
   overflow: auto;
@@ -141,6 +199,14 @@ export default {
   &::-webkit-scrollbar {
     width: 0;
   }
+}
+.su-item {
+  // flex: 1;
+  // margin-top: 30px;
+  width: 100%;
+}
+.task-main .su-input {
+  width: 100%;
 }
 .su-detail {
   flex-shrink: 0;

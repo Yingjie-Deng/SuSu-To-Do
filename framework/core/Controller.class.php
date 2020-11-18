@@ -11,6 +11,13 @@ class Controller
     // }
 
     /**
+     * 用户token信息
+     * @access protected
+     * @type array
+     */
+    protected $tokenInfo;
+
+    /**
      * 重定向.
      *
      * @param $url 用于重定向的URL
@@ -35,17 +42,17 @@ class Controller
     /**
      * 验证token是否有效.
      *
-     * @param string $token 需要验证的token
-     *
-     * @return string 成功返回string，失败重定向到登录页面
+     * @access protected
+     * @return string 成功返回string，失败返回未登录json字符串给前端
      */
-    protected function verifyToken($token)
+    protected function verifyToken()
     {
         // 跳过预检
         if (isset($_SERVER['REQUEST_METHOD']) && 'OPTIONS' == $_SERVER['REQUEST_METHOD']) {
             exit();
         }
 
+        isset($_SERVER['HTTP_AUTHORIZATION']) ? $token = $_SERVER['HTTP_AUTHORIZATION'] : $token = '';
         $resTokenInfo = Jwt::verifyToken($token);
         if (!$resTokenInfo) {
             // $this->redirect('http://localhost/todo/login');
@@ -56,25 +63,46 @@ class Controller
             exit();
         }
 
-        return $resTokenInfo;
+        return $this->tokenInfo = $resTokenInfo;
     }
 
     /**
      * 刷新token.
      *
+     * @access protected
+     * 
      * @param string $pid
      *
      * @return string $token
      */
     protected function refresh($pid)
     {
-        return $this->getToken([
-      'iss' => 'admin',
-      'iat' => time(),
-      'exp' => time() + 7200,
-      'nbf' => time(),
-      'sub' => $pid,
-      'jti' => md5(uniqid('JWT').time()),
-    ]);
+        $newtoken =  $this->getToken([
+            'iss' => 'admin',
+            'iat' => time(),
+            'exp' => time() + 7200,
+            'nbf' => time(),
+            'sub' => $pid,
+            'jti' => md5(uniqid('JWT').time()),
+        ]);
+        if ($newtoken) {
+            return $newtoken;
+        } else {
+            return $_SERVER['HTTP_AUTHORIZATION'];
+        }
+    }
+
+    /**
+     * 响应用户
+     * @access protected
+     * @param array, number, string; $res, $status, $msg
+     * 
+     */
+    protected function response($res, $status = 200, $msg = 'OK') {
+        $res['data']['token'] = $this->refresh($this->tokenInfo['sub']);
+        $res['meta']['msg'] = $msg;
+        $res['meta']['status'] = $status;
+        echo json_encode($res);
+        exit();
     }
 }

@@ -47,10 +47,18 @@ const router = new VueRouter({
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
-  if (to.path === '/todo/login' || to.path === '/todo/register') return next();
+  if (to.path === '/todo/login' || to.path === '/todo/register' || to.path === '/todo') return next();
   // 去其他页面，需要登录，获取token
+  // 保存要去的页面，登录成功后回来。
+  window.sessionStorage.setItem('current', to.path);
   const token = window.localStorage.getItem('token');
-  if (!token) return next('/todo/login');
+  if (!token) {
+    Vue.prototype.$message({
+      message: '未登录',
+      type: 'warning'
+    });
+    return next('/todo/login');
+  }
   next();
 })
 

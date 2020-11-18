@@ -32,6 +32,9 @@ class Mysql
             exit();
         }
         $this->setChar($charset);
+
+        // 设置时区
+        $this->query("set time_zone = '+8:00';");
     }
 
     /**

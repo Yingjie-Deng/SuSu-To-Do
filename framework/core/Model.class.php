@@ -81,10 +81,10 @@ class Model {
         $set_list .= "`$k`=$v,";
       }
       foreach ($list['where'] as $k => $v) {
-        $where_list .= "`$k`=$v,";
+        $where_list .= "`$k`=$v AND ";
       }
       $set_list = rtrim($set_list, ',');
-      $where_list = rtrim($where_list, ',');
+      $where_list = rtrim($where_list, ' AND ');
 
       $sql = "UPDATE `{$this->table}` SET {$set_list} WHERE {$where_list}";
       return $this->db->query($sql);
