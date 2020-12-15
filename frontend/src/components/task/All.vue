@@ -3,36 +3,30 @@
     <div class="task-main">
       <div class="header">
         <h1 class="title">
-          <i class="el-icon-sunny" style="color: #586570"></i>
-          <span>我的一天</span>
+          <i class="el-icon-menu" style="color: #c8605c"></i>
+          <span>全部</span>
         </h1>
-        <p class="datetime">{{ '日期过滤器' | current }}</p>
       </div>
       <main class="main">
-        <su-item
-          :data="tasks.plan"
-          title="content"
-          other="listName"
-          :activedId="activedId"
-          @comp-toggle="firstComplete"
-          @impt-toggle="firstImportToggle"
-          @active="handleActive($event)"
-        ></su-item>
-        <su-button
-          :count="count"
-          v-if="count"
-          @click.native="isfold = !isfold"
-        ></su-button>
-        <su-item
-          :data="tasks.done"
-          title="content"
-          other="listName"
-          :activedId="activedId"
-          v-if="!isfold"
-          @comp-toggle="secondComplete"
-          @impt-toggle="secondImportToggle"
-          @active="handleActive($event)"
-        ></su-item>
+        <div class="item-box" v-for="(tasksObj, name) in tasks" :key="name">
+          <su-button
+            :count="tasksObj.count"
+            v-if="tasksObj.count"
+            @click.native="tasksObj.isfold = !tasksObj.isfold"
+          >
+            <template>{{ name }}</template>
+          </su-button>
+          <su-item
+            :data="tasksObj.tasks"
+            title="content"
+            other="deadline"
+            :activedId="activedId"
+            v-if="!tasksObj.isfold"
+            @comp-toggle="complete(name, $event)"
+            @impt-toggle="importToggle(name, $event)"
+            @active="handleActive($event)"
+          ></su-item>
+        </div>
       </main>
       <su-input
         placeholder="添加任务"
@@ -44,7 +38,7 @@
     </div>
 
     <div class="su-detail" v-if="showDetail">
-      <h1>任务详情</h1>
+      <h1>title</h1>
       <div>{{ oneTask.content + ' -- 截止时间：' + oneTask.deadline }}</div>
     </div>
   </div>
@@ -56,8 +50,9 @@ export default {
   data() {
     return {
       showDetail: false,
+      tasks: {},
+      // 详情信息
       oneTask: null,
-      tasks: { plan: [], done: [] },
       // taskList: this.$store.state.taskList,
       // 保存被激活的 item 的 tid
       activedId: '-1',
@@ -87,19 +82,19 @@ export default {
   },
   methods: {
     // 任务完成
-    async firstComplete(index) {
-      Subase.complete.call(this, this.tasks.plan, index, this.loadTasks);
+    async complete(name, index) {
+      Subase.complete.call(this, this.tasks[name].tasks, index, this.loadTasks);
     },
-    async secondComplete(index) {
-      Subase.complete.call(this, this.tasks.done, index, this.loadTasks);
-    },
+    // async secondComplete(index) {
+    //   Subase.complete.call(this, this.tasks.done, index, this.loadTasks);
+    // },
     // 切换重要性
-    async firstImportToggle(index) {
-      Subase.importToggle.call(this, this.tasks.plan, index, this.loadTasks);
+    async importToggle(name, index) {
+      Subase.importToggle.call(this, this.tasks[name].tasks, index, this.loadTasks);
     },
-    async secondImportToggle(index) {
-      Subase.importToggle.call(this, this.tasks.done, index, this.loadTasks);
-    },
+    // async secondImportToggle(index) {
+    //   Subase.importToggle.call(this, this.tasks.done, index, this.loadTasks);
+    // },
     handleActive(tid) {
       if (tid !== this.activedId) {
         this.showDetail = true;
@@ -120,41 +115,19 @@ export default {
     },
     // 添加记录事件处理函数
     async handleEnter(newItem) {
-      newItem.my_day = true;
       const { data: res } = await this.$http.post('tasks/addTask', newItem);
       if (res.meta.status !== 201) return this.$message.error('添加任务失败！');
       this.loadTasks();
     },
     // 获取数据
     async loadTasks() {
-      const { data: res } = await this.$http.get('tasks/myday');
-      // console.log('enter', res);
+      const { data: res } = await this.$http.get('tasks/getAll');
+      console.log('enter', res);
       if (res.meta.status !== 200) return this.$message.error('获取数据失败！');
-      const mytasks = res.data.myday_tasks,
-        len = mytasks.length,
-        tasks = { plan: [], done: [] };
-      for (let i = 0; i < len; i++) {
-        if (mytasks[i].end_time === '0000-00-00 00:00:00') {
-          mytasks[i].complete = false;
-        } else {
-          mytasks[i].complete = true;
-        }
 
-        if (mytasks[i].import === '0') {
-          mytasks[i].import = false;
-        } else {
-          mytasks[i].import = true;
-        }
-
-        if (mytasks[i].complete) {
-          tasks.done.push(mytasks[i]);
-        } else {
-          tasks.plan.push(mytasks[i]);
-        }
-      }
-      this.tasks = tasks;
+      this.tasks = res.data.tasks;
       // window.localStorage.setItem('token', res.data.token);
-      console.log(this.tasks);
+      console.log('tasks::', this.tasks);
     },
     // 获取详细信息
     async detail() {
@@ -163,7 +136,7 @@ export default {
         return this.$message.error('获取详细信息错误！');
       }
       this.oneTask = res.data.detail;
-    }
+    },
   },
 };
 </script>

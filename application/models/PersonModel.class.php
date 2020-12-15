@@ -84,4 +84,16 @@ class PersonModel extends Model {
   public function close() {
     return $this->db->close();
   }
+
+  /**
+   * 修改用户某列的信息
+   * @access public
+   * @param array
+   */
+  public function alterCol($info = [], $where = []) {
+    $this->update([
+      'set' => $info,
+      'where' => $where
+    ]);
+  }
 }

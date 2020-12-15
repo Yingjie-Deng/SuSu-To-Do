@@ -104,9 +104,9 @@ class Model {
     $this->preprocess($list);
     $where_list = false;
     foreach ($list as $k => $v) {
-      $where_list .= "`{$k}`=$v,";
+      $where_list .= "`{$k}`=$v AND ";
     }
-    $where_list = rtrim($where_list, ',');
+    $where_list = rtrim($where_list, ' AND ');
     $sql = "DELETE FROM `{$this->table}` WHERE {$where_list}";
     return $this->db->query($sql);
   }
