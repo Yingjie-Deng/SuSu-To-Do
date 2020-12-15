@@ -56,7 +56,7 @@ WHERE my_day = TRUE AND task.`start_time` BETWEEN CURDATE() AND DATE_ADD(CURDATE
 SELECT CURRENT_TIMESTAMP();
 SELECT CURDATE();
 
-DROP VIEW IF EXISTS myday;
+DROP VIEW IF EXISTS overdue;
 
 -- ------------------------------
 -- 修改task表的lid字段默认值为all_001
@@ -69,6 +69,7 @@ ALTER TABLE `list` CHANGE COLUMN `lid` `lid` VARCHAR(150) PRIMARY KEY;
 
 -- -------------------------------------------
 -- 创建“重要”视图
+-- 
 CREATE VIEW important
 AS
 SELECT tid, task.pid, content, my_day, `list`.`name` AS listName, found_time, deadline, start_time, end_time
@@ -82,7 +83,7 @@ WHERE task.`important` = TRUE AND task.`start_time` BETWEEN CURDATE() AND DATE_A
 -- ** “today” 、 “谜”同
 CREATE VIEW yesterday
 AS
-SELECT tid, task.pid, content, my_day, important, `list`.`name` AS listName, found_time, deadline, start_time, end_time
+SELECT tid, task.pid, content, my_day, important AS `import`, `list`.`name` AS listName, found_time, deadline, start_time, end_time
 FROM task JOIN `list` ON task.`lid` = `list`.`lid`
 WHERE task.`start_time` BETWEEN DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND CURDATE();
 
@@ -90,21 +91,21 @@ WHERE task.`start_time` BETWEEN DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND CURDATE()
 -- 创建“当下（today）”视图
 CREATE VIEW today
 AS
-SELECT tid, task.`pid`, content, my_day, important, `list`.`name` AS listName, found_time, deadline, start_time, end_time
+SELECT tid, task.`pid`, content, my_day, important AS `import`, `list`.`name` AS listName, found_time, deadline, start_time, end_time
 FROM task JOIN `list` ON task.`lid` = `list`.`lid`
 WHERE task.`start_time` BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY);
 
 -- 创建“明天->谜”视图
 CREATE VIEW mystery
 AS
-SELECT tid, task.`pid`, content, my_day, important, `list`.`name` AS listName, found_time, deadline, start_time, end_time
+SELECT tid, task.`pid`, content, my_day, important AS `import`, `list`.`name` AS listName, found_time, deadline, start_time, end_time
 FROM task JOIN `list` ON task.`lid` = `list`.`lid`
 WHERE task.`start_time` BETWEEN DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND DATE_ADD(CURDATE(), INTERVAL 2 DAY);
 
 -- 创建“已完成”视图
 CREATE VIEW completed
 AS
-SELECT tid, task.`pid`, content, my_day, important, `list`.`name` AS listName, found_time, deadline, start_time, end_time
+SELECT tid, task.`pid`, content, my_day, important AS `import`, `list`.`name` AS listName, found_time, deadline, start_time, end_time
 FROM task JOIN `list` ON task.`lid` = `list`.`lid`
 WHERE end_time;
 
@@ -116,12 +117,12 @@ WHERE end_time;
 -- 按创建时间降序展示同清单任务
 CREATE VIEW `all`
 AS
-SELECT tid, task.`pid`, content, my_day, important, `list`.`name` AS listName, found_time, deadline, start_time, end_time
+SELECT tid, task.`pid`, content, my_day, important AS `import`, `list`.`name` AS listName, found_time, deadline, start_time, end_time
 FROM task JOIN `list` ON task.`lid` = `list`.`lid`
 WHERE NOT(end_time) AND deadline >= CURRENT_TIMESTAMP()
 ORDER BY `list`.`lid` DESC, task.`found_time` DESC;
 
-DROP VIEW IF EXISTS `all`;
+DROP VIEW IF EXISTS `overdue`;
 SELECT * FROM `all`;
 -- 创建“逾期未完成”视图
 -- **说明
@@ -129,10 +130,10 @@ SELECT * FROM `all`;
 -- 同清单的任务，按创建时间降序展示
 CREATE VIEW overdue
 AS
-SELECT tid, task.`pid`, content, my_day, important, `list`.`name` AS listName, found_time, deadline, start_time, end_time
+SELECT tid, task.`pid`, content, my_day, important AS `import`, `list`.`name` AS listName, found_time, deadline, start_time, end_time
 FROM task JOIN `list` ON task.`lid` = `list`.`lid`
 WHERE NOT (end_time) AND deadline < CURRENT_TIMESTAMP()
-ORDER BY `list`.`lid` DESC, task.`found_time` DESC;
+ORDER BY `list`.`name` ASC, task.`found_time` DESC;
 
 -- 创建“用户信息视图”
 CREATE VIEW personInfo

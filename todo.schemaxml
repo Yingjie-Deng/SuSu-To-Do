@@ -61,10 +61,10 @@
   `my_day` tinyint(1) NOT NULL,
   `important` tinyint(1) NOT NULL,
   PRIMARY KEY (`tid`),
-  KEY `pid` (`pid`),
-  KEY `lid` (`lid`),
-  CONSTRAINT `task_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `person` (`pid`),
-  CONSTRAINT `task_ibfk_2` FOREIGN KEY (`lid`) REFERENCES `list` (`lid`)
+  KEY `task_ibfk_1` (`pid`),
+  KEY `task_ibfk_2` (`lid`),
+  CONSTRAINT `task_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `person` (`pid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `task_ibfk_2` FOREIGN KEY (`lid`) REFERENCES `list` (`lid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8</sql_create_table>
 </table>
 <table name="step" view="standard">

@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
 RewriteEngine on
 #RewriteBase /todo
-RewriteCond %{REQUEST_URI} ^/todo/susu/(.*)$
+RewriteCond %{REQUEST_URI} ^/todo/index.php/susu/(.*)$
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]

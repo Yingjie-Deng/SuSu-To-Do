@@ -40,3 +40,6 @@ body::-webkit-scrollbar {
   flex-basis: auto;
   height: calc(100vh - 2px);
 }
+.task-detail-container .item-box:last-of-type {
+  margin-bottom: 15px;
+}

@@ -14,7 +14,7 @@ import SuButton from '@/components/SuButton.vue'
 // 引入axios
 import axios from 'axios'
 // 配置请求的根路径
-axios.defaults.baseURL = 'http://localhost/todo/susu/';
+axios.defaults.baseURL = 'http://localhost/todo/index.php/susu/';
 // 配置自动携带authorization
 axios.interceptors.request.use(config => {
   config.headers.Authorization = window.localStorage.getItem('token');
@@ -47,10 +47,17 @@ import {
   Tooltip,
   DatePicker,
   Divider,
+  Popover,
+  Dialog,
+  MessageBox,
+  Pagination,
+  Option,
+  Upload,
 
 } from 'element-ui';
 
 Vue.prototype.$message = Message;
+Vue.prototype.$Msg = MessageBox;
 Vue.config.productionTip = false
 Vue.use(Button)
 Vue.use(Select)
@@ -77,6 +84,11 @@ Vue.use(SuInput)
 Vue.use(Tooltip)
 Vue.use(DatePicker)
 Vue.use(Divider)
+Vue.use(Popover)
+Vue.use(Dialog)
+Vue.use(Pagination)
+Vue.use(Option)
+Vue.use(Upload)
 
 Vue.component('SuButton', SuButton);
 
@@ -119,7 +131,8 @@ Vue.filter('week', function () {
   if (arguments[1] === 11) {  // 下周一
     return '周一';
   }
-  return `周${week[w + arguments[1]]}`;
+  const index = (w + arguments[1]) % 7;
+  return `周${week[index]}`;
 })
 new Vue({
   router,
