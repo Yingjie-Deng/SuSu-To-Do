@@ -149,7 +149,7 @@ export default {
           },
           { validator: validateNewPasw, trigger: 'blur' },
         ],
-        checkNewPasw: [{ validator: validateCheckPass, trigger: 'blur' }],
+        checkNewPasw: [{ validator: validateCheckPass, trigger: 'change' }],
         oldPasw: [
           {
             required: true,
@@ -192,6 +192,10 @@ export default {
           if (!Object.keys(newQuery).length) return;
           const { data: res } = await this.$http.post('person/alter', newQuery);
           if (res.meta.status === 403) {
+            return this.$message.error(res.meta.msg);
+          }
+          // 处理其他类型错误
+          if (res.meta.status !== 200) {
             return this.$message.error(res.meta.msg);
           }
           this.$message.success('修改信息成功！');
