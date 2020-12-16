@@ -56,12 +56,13 @@ export default {
   data() {
     let validatorLoginName = (rule, value, callback) => {
       // 验证邮箱
-      if (
-        value.indexOf('@') !== -1 &&
-        !/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)
-      ) {
-        callback(new Error('邮箱不正确'));
-      } else callback();
+      const regEm = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const regPh = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-7|9])|(?:5[0-3|5-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1|8|9]))\d{8}$/;
+      const isEm = regEm.test(value);
+      const isPh = regPh.test(value);
+      if (isPh || isEm) {
+        callback();
+      } else callback(new Error('不正确的邮箱或手机号'));
     };
     return {
       // 登录表单的数据绑定对象
@@ -85,9 +86,9 @@ export default {
     logHandle() {
       this.$refs['logFormRef'].validate(async (valid) => {
         if (!valid) return;
-        const {data: res} = await this.$http.post('reg/login', this.logForm);
+        const { data: res } = await this.$http.post('reg/login', this.logForm);
         // console.log('login--', res);
-        if (res.meta.status !== 200) return this.$message.error('登录失败');
+        if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
         this.$message.success('登陆成功');
         window.localStorage.setItem('token', res.data.token);
         let pre = sessionStorage.getItem('current');

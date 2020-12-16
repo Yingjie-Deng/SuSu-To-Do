@@ -1,21 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Test from '../components/test.vue'
-import Home from '../components/Home'
-import Ha from '../components/Ha.vue'
+import Home from '../components/user/Home'
+import Root from '../components/Root.vue'
 import NotFound from '../components/Notfound.vue'
 // 引入任务相关的组件
 import Myday from '../components/task/Myday.vue'
 import Import from '../components/task/Import.vue'
 import Ppf from '../components/task/Ppf.vue'
-import Register from '../components/Register.vue'
-import Login from '../components/Login.vue'
+import Register from '../components/user/Register.vue'
+import Login from '../components/user/Login.vue'
 import All from '../components/task/All.vue'
 import Complete from '../components/task/Complete.vue'
 import Overdue from '../components/task/Overdue.vue'
 import ListShow from '../components/task/ListShow.vue'
-import Search from '../components/Search.vue'
-import Alter from '../components/Alter.vue'
+import Search from '../components/task/Search.vue'
+import Alter from '../components/user/Alter.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -32,7 +32,7 @@ const routes = [
   //   // which is lazy-loaded when the route is visited.
   //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   // }
-  { path: '/', name: 'root', component: Ha },
+  { path: '/', name: 'root', component: Root },
   { path: '/todo', name: 'Test', component: Test },
   {
     path: '/todo/home', component: Home, redirect: '/todo/myday',
@@ -72,6 +72,7 @@ router.beforeEach((to, from, next) => {
     });
     return next('/todo/login');
   }
+  document.title = to.meta.title ? to.meta.title : 'SuSu To-Do'
   next();
 })
 

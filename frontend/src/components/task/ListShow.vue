@@ -12,7 +12,7 @@
           :data="tasks.plan"
           title="content"
           other="found_time"
-          :activedId="activedId"
+          :actived-id="activedId"
           @comp-toggle="firstComplete"
           @impt-toggle="firstImportToggle"
           @active="handleActive($event)"
@@ -26,7 +26,7 @@
           :data="tasks.done"
           title="content"
           other="end_time"
-          :activedId="activedId"
+          :actived-id="activedId"
           v-if="!isfold"
           @comp-toggle="secondComplete"
           @impt-toggle="secondImportToggle"
@@ -53,10 +53,12 @@
       ></su-input>
     </div>
 
-    <div class="su-detail" v-if="showDetail">
-      <h1>title</h1>
-      <div>{{ oneTask }}</div>
-    </div>
+    <su-detail
+      v-if="showDetail"
+      :detail="activedItem"
+      @close="handleActive($event)"
+      @delete="deleteTask"
+    ></su-detail>
   </div>
 </template>
 
@@ -69,6 +71,8 @@ export default {
       tasks: { plan: [], done: [] },
       // 保存被激活的 item 的 tid
       activedId: '-1',
+      // 保存被激活的 item 的信息
+      activedItem: {},
       // 控制折叠
       isfold: false,
       // 清单对象
@@ -111,6 +115,12 @@ export default {
   watch: {
     $route() {
       // 点击另一个清单时路由变化，组件不重载，监听路由
+      // 路由变化意味着加载另一个清单，因此需要重置分页查询信息
+      this.queryInfo.pagenum = 1;
+      this.queryInfo.pagesize = 10;
+      // 加载另一个清单时，将打开的 showDetail 收起来
+      this.showDetail = false;
+      this.activedId = '-1';
       this.getList();
       this.loadTasks();
     },
@@ -135,12 +145,12 @@ export default {
     async secondImportToggle(index) {
       Subase.importToggle.call(this, this.tasks.done, index, this.loadTasks);
     },
-    handleActive(tid) {
+    async handleActive(tid) {
       if (tid !== this.activedId) {
         this.showDetail = true;
         this.activedId = tid;
         // 加载被激活任务的详细信息
-        this.oneTask = tid;
+        this.detail();
       } else {
         // 被激活的 item 与上一次相同，即关闭详细页
         this.showDetail = false;
@@ -194,8 +204,20 @@ export default {
     getList() {
       if (!this.$store.state.taskList) return;
       const lid = (this.currentLid = this.$route.params.lid);
+      // 删除清单后会重新获取清单列表，会触发 taskList 侦听器，
+      // 如果先进入了待删除的清单，在删除后会因重新加载 taskList
+      // 触发侦听器后会调用此方法，但已删除此清单，故不存在此时路由所
+      // 指向的 lid 会报属性不存在的错误
+      let lids = this.$store.state.taskList.map((v) => {
+        return v.lid;
+      });
+      lids.push('all_001');
+      if (lids.indexOf(lid) === -1) {
+        return this.$router.push('/todo/lists/all_001');
+      }
+
       this.queryInfo.lid = this.currentLid;
-      console.log('showLid:::', this.currentLid);
+      // console.log('showLid:::', this.currentLid);
       if (lid === 'all_001') {
         this.list = this.$store.state.defaultList;
       } else {
@@ -203,6 +225,27 @@ export default {
           (list) => list.lid === lid
         )[0];
       }
+    },
+    // 获取详细信息
+    async detail() {
+      const { data: res } = await this.$http.get(
+        'tasks/detail?tid=' + this.activedId
+      );
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取任务信息失败！');
+      }
+      this.activedItem = res.data.detail;
+    },
+    // 删除任务
+    async deleteTask(tid) {
+      const { data: res } = await this.$http.get('tasks/delete?tid=' + tid);
+      if (res.meta.status !== 204) {
+        return this.$message.error('删除失败！');
+      }
+      this.$message.success('删除成功！');
+      this.showDetail = false;
+      this.activedId = '-1';
+      this.loadTasks();
     },
   },
 };
@@ -266,5 +309,6 @@ main.main {
 }
 .el-pagination {
   margin: 30px 0;
+  // width: 100%;
 }
 </style>

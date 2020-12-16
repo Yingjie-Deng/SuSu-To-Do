@@ -77,6 +77,14 @@
 <script>
 export default {
   data() {
+    let validatePhone = (rule, value, cb) => {
+      const regPh = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-7|9])|(?:5[0-3|5-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1|8|9]))\d{8}$/;
+      if (regPh.test(value)) {
+        cb();
+      } else {
+        cb(new Error('请输入正确的手机号'));
+      }
+    };
     let validatorEmail = (rule, value, callback) => {
       // 验证邮箱
       if (
@@ -111,6 +119,7 @@ export default {
         phone: [
           { required: true, message: '手机号不能为空', trigger: 'blur' },
           { type: 'number', message: '手机号必须为数字值' },
+          {validator: validatePhone, trigger: 'blur'}
         ],
         email: [{ validator: validatorEmail, trigger: 'blur' }],
         password: [
