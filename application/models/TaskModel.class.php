@@ -97,6 +97,11 @@ class TaskModel extends Model {
     } else {
       $result['complete'] = true;
     }
+    if ($result['my_day'] == '0') {
+      $result['myday'] = false;
+    } else {
+      $result['myday'] = true;
+    }
     if ($result['important'] == '0') {
       $result['import'] = false;
     } else {
@@ -149,5 +154,16 @@ class TaskModel extends Model {
     }
     
     return $result;
+  }
+
+  /**
+   * 删除任务
+   * @access public
+   * @param string $tid
+   */
+  public function deleteTask($tid) {
+    $this->delete([
+      'tid' => "$tid"
+    ]);
   }
 }
