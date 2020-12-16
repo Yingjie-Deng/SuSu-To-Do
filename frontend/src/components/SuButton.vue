@@ -46,7 +46,7 @@ export default {
   padding: 2px 5px;
 }
 .prefix {
-  transition: transform 1s linear 0;
+  transition: transform 0.2s linear 0s;
 }
 .rotate {
   transform: rotate(-90deg);

@@ -313,4 +313,18 @@ class TasksController extends Controller {
 
     $this->response($res);
   }
+
+  /**
+   * 删除任务
+   * @access public
+   */
+  public function delete() {
+    $tokenInfo = $this->verifyToken();
+
+    $tid = $_GET['tid'];
+    $taskModel = new TaskModel('task', ['my_day', 'important']);
+    $taskModel->deleteTask($tid);
+
+    $this->response(['data' => []], 204);
+  }
 }

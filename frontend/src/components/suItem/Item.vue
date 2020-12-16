@@ -122,7 +122,9 @@ export default {
         // 'http://127.0.0.1:1107/media/complete.22b3e387.wav'
         // '../media/complete.22b3e387.wav'
         // '@/assets/complete.wav'
-        const audio = new Audio('http://localhost/todo/application/views/complete.wav');
+        const audio = new Audio(
+          'http://localhost/todo/application/views/complete.wav'
+        );
         audio.src = 'http://localhost/todo/application/views/complete.wav';
         audio.load();
         const aduioPromise = audio.play();
@@ -146,6 +148,9 @@ export default {
 
 <style lang="less" scoped>
 .task-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 60px;
   padding: 0 20px 0 10px;
   margin: 2px 0;
@@ -160,6 +165,7 @@ export default {
   }
   .radio {
     display: flex;
+    flex-shrink: 0;
     justify-content: center;
     align-items: center;
     float: left;
@@ -179,12 +185,17 @@ export default {
     }
   }
   .content {
-    padding: 10px 0 0 10px;
-    float: left;
+    padding: 10px 10px 0 10px;
+    flex: 1;
     height: 60px;
+    overflow: hidden;
     .item_title {
+      width: 100%;
       font-size: 16px;
       font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
     .task {
       font-size: 12px;
@@ -192,7 +203,7 @@ export default {
     }
   }
   .import {
-    float: right;
+    flex: 0;
     line-height: 60px;
     width: 24px;
     font-size: 24px;

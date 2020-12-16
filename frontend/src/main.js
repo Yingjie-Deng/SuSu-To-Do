@@ -11,6 +11,8 @@ import Item from '@/components/suItem/index.js'
 import SuInput from '@/components/suInput/index.js'
 // 引入 Button 组件
 import SuButton from '@/components/SuButton.vue'
+// 引入 Detail 组件
+import SuDetail from '@/components/SuDetail.vue'
 // 引入axios
 import axios from 'axios'
 // 配置请求的根路径
@@ -91,6 +93,7 @@ Vue.use(Option)
 Vue.use(Upload)
 
 Vue.component('SuButton', SuButton);
+Vue.component('SuDetail', SuDetail);
 
 // 配置响应拦截器
 axios.interceptors.response.use(response => {

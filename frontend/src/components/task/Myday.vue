@@ -43,10 +43,12 @@
       ></su-input>
     </div>
 
-    <div class="su-detail" v-if="showDetail">
-      <h1>任务详情</h1>
-      <div>{{ oneTask.content + ' -- 截止时间：' + oneTask.deadline }}</div>
-    </div>
+    <su-detail
+      v-if="showDetail"
+      :detail="oneTask"
+      @close="handleActive($event)"
+      @delete="deleteTask"
+    ></su-detail>
   </div>
 </template>
 
@@ -56,7 +58,7 @@ export default {
   data() {
     return {
       showDetail: false,
-      oneTask: null,
+      oneTask: {},
       tasks: { plan: [], done: [] },
       // taskList: this.$store.state.taskList,
       // 保存被激活的 item 的 tid
@@ -158,12 +160,25 @@ export default {
     },
     // 获取详细信息
     async detail() {
-      const {data: res} = await this.$http.get('tasks/detail?tid=' + this.activedId);
+      const { data: res } = await this.$http.get(
+        'tasks/detail?tid=' + this.activedId
+      );
       if (res.meta.status !== 200) {
-        return this.$message.error('获取详细信息错误！');
+        return this.$message.error('获取任务信息失败！');
       }
       this.oneTask = res.data.detail;
-    }
+    },
+    // 删除任务
+    async deleteTask(tid) {
+      const { data: res } = await this.$http.get('tasks/delete?tid=' + tid);
+      if (res.meta.status !== 204) {
+        return this.$message.error('删除失败！');
+      }
+      this.$message.success('删除成功！');
+      this.showDetail = false;
+      this.activedId = '-1';
+      this.loadTasks();
+    },
   },
 };
 </script>

@@ -110,10 +110,12 @@
       ></su-input>
     </div>
 
-    <div class="su-detail" v-if="showDetail">
-      <h1>title</h1>
-      <div>{{ oneTask }}</div>
-    </div>
+    <su-detail
+      v-if="showDetail"
+      :detail="oneTask"
+      @close="handleActive($event)"
+      @delete="deleteTask"
+    ></su-detail>
   </div>
 </template>
 
@@ -129,7 +131,8 @@ export default {
 
       // 保存被激活的 item 的 tid
       activedId: '-1',
-
+      // 保存被激活的 task 的信息
+      oneTask: {},
       // 控制折叠 --- 昨天、今天
       yisfold: false,
       tisfold: false,
@@ -260,7 +263,7 @@ export default {
         this.showDetail = true;
         this.activedId = tid;
         // 加载被激活任务的详细信息
-        this.oneTask = tid;
+        this.detail();
       } else {
         // 被激活的 item 与上一次相同，即关闭详细页
         this.showDetail = false;
@@ -323,6 +326,27 @@ export default {
       }
       this[localTasks] = tasks;
     },
+    // 获取详细信息
+    async detail() {
+      const { data: res } = await this.$http.get(
+        'tasks/detail?tid=' + this.activedId
+      );
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取任务信息失败！');
+      }
+      this.oneTask = res.data.detail;
+    },
+    // 删除任务
+    async deleteTask(tid) {
+      const { data: res } = await this.$http.get('tasks/delete?tid=' + tid);
+      if (res.meta.status !== 204) {
+        return this.$message.error('删除失败！');
+      }
+      this.$message.success('删除成功！');
+      this.showDetail = false;
+      this.activedId = '-1';
+      this.loadTasks();
+    },
   },
 };
 </script>
@@ -365,17 +389,18 @@ main.main {
   margin-top: 30px;
   width: 100%;
   overflow: auto;
-  -ms-overflow-style: none;
-  overflow: -moz-scrollbars-none;
-  &::-webkit-scrollbar {
-    width: 0;
-  }
+  // -ms-overflow-style: none;
+  // overflow: -moz-scrollbars-none;
+  // &::-webkit-scrollbar {
+  //   width: 0;
+  // }
 
   section {
     display: flex;
     flex-direction: column;
     flex: 1;
-    width: 500px;
+    // 先回收 section 的宽度，由 flex 进行分配
+    width: 0px;
     &:not(:last-of-type) {
       padding-right: 10px;
     }
