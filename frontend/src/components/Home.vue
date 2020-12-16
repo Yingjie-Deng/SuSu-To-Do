@@ -156,6 +156,7 @@
       <!-- 修改用户信息的dialog -->
       <el-dialog
         title="管理账户"
+        class="manager-dialog"
         :visible.sync="showUserDialog"
         width="328px"
         :show-close="false"
@@ -238,9 +239,9 @@ export default {
     this.getList();
   },
   watch: {
-    listCopy(val) {
-      this.renameItem = val[this.listIndex];
-    },
+    // listCopy(val) {
+    //   this.renameItem = val[this.listIndex];
+    // },
   },
   computed: {
     activeMenu() {
@@ -593,7 +594,7 @@ export default {
     font-weight: 800;
   }
 }
-/deep/.el-dialog__body {
+.manager-dialog /deep/.el-dialog__body {
   padding: 10px 0 0;
 }
 .dialog-user-info {

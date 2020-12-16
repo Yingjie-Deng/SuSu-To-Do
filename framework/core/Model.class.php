@@ -32,7 +32,7 @@ class Model {
   /**
    * 插入记录
    * @access public
-   * @param $list 关联数组
+   * @param array $list 关联数组
    * @return 插入成功返回true，失败结束脚本 
    */
   public function insert($list) {

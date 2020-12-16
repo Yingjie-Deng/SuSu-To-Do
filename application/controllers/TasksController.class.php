@@ -13,7 +13,7 @@ class TasksController extends Controller {
     $tokenInfo = $this->verifyToken();
 
     $mydayModel = new MydayModel('myday', ['important']);
-    $res['data']['myday_tasks'] = $mydayModel->getTasks();
+    $res['data']['myday_tasks'] = $mydayModel->getTasks($tokenInfo['sub']);
     $res['meta']['msg'] = 'OK';
     $res['meta']['status'] = 200;
     $res['data']['token'] = $this->refresh($tokenInfo['sub']);
