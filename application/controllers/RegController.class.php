@@ -4,9 +4,6 @@
  * 继承于Controller
  */
 class RegController extends Controller {
-
-  // private $person = null;
-
   /**
    * 注册方法
    * @access public
@@ -98,11 +95,8 @@ class RegController extends Controller {
    * @method POST
    */
   public function login() {
-    // $loginInfo['login_name'] = $_POST['login_name'];
-    // $loginInfo['password'] = $_POST['password'];
     $loginInfo = file_get_contents('php://input');
     $loginInfo = json_decode($loginInfo, true);
-    // var_dump($loginInfo);
 
     $model = new Mysql($GLOBALS['config']['db']);
     $sure = $model->getRow([
