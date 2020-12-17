@@ -45,6 +45,12 @@
         </p>
       </div>
       <div class="item">
+        <p class="label">开始时间:</p>
+        <p class="value">
+          <span><i class="el-icon-video-play"></i></span>{{ detail.start_time }}
+        </p>
+      </div>
+      <div class="item">
         <p class="label">创建时间:</p>
         <p class="value">
           <span><i class="el-icon-s-flag"></i></span>{{ detail.found_time }}
@@ -203,5 +209,8 @@ export default {
 .el-icon-circle-close,
 .deadline {
   color: #dc282b;
+}
+.el-icon-video-play {
+  color: #8fa7ec;
 }
 </style>
