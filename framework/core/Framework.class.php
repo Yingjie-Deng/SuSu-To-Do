@@ -103,7 +103,7 @@ class Framework
             $controller = new $controller_name;
             if (!method_exists($controller, $action_name)) {
                 // 重定向
-                Controller::redirect("http://localhost/todo/home");
+                Controller::redirect("http://localhost/todo/welcome");
             } else {
                 $controller->$action_name();
             }

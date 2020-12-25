@@ -181,7 +181,7 @@ export default {
       }
     }
     .close {
-      width: 50px;
+      width: 60px;
     }
     .delete {
       width: 300px;

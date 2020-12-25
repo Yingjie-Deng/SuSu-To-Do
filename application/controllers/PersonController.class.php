@@ -106,7 +106,7 @@ class PersonController extends Controller {
     $exarray = explode('.', $info['temp_path']);
     $extension = end($exarray);
     $temp = TEMP . "{$this->tokenInfo['sub']}.$extension";
-    $realPath = AVATAR . "{$this->tokenInfo['sub']}.$extension";
+    $realPath = iconv('UTF-8', 'GBK', AVATAR . "{$this->tokenInfo['sub']}.$extension");
     if (copy($temp, $realPath)) {
       // 拷贝成功，需要删除临时图片，修改数据库
       unlink($temp);

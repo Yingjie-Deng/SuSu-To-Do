@@ -29,7 +29,7 @@ class ListModel extends Model {
     return 'OK';
   }
   /**
-   * 添加用户清单
+   * 重命名用户清单
    * @access public
    * @param array $list
    * @return 
@@ -39,7 +39,7 @@ class ListModel extends Model {
     return 'OK';
   }
   /**
-   * 添加用户清单
+   * 删除用户清单
    * @access public
    * @param array $list
    * @return 

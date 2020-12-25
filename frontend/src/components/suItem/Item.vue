@@ -161,7 +161,7 @@ export default {
   -webkit-transition: background 0.2s linear; /* Safari 和 Chrome */
   -o-transition: background 0.2s linear;
   &:hover {
-    background: #f5f5f5;
+    background: #eeeeee;
   }
   .radio {
     display: flex;
@@ -212,7 +212,7 @@ export default {
 }
 /** 完成或激活后的样式 -- 删除线、背景 */
 .active-bg {
-  background: #f5f5f5;
+  background: #eeeeee;
 }
 .delete-line {
   text-decoration: line-through;

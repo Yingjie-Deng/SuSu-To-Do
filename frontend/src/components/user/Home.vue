@@ -269,7 +269,7 @@ export default {
       this.$router.push('/todo/search');
     },
     clickSetting() {
-      this.$router.push('setting');
+      this.$router.push('/todo/setting');
     },
     // 询问是否确认退出
     isCancelHandler() {

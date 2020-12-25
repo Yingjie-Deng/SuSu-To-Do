@@ -16,6 +16,7 @@ import Overdue from '../components/task/Overdue.vue'
 import ListShow from '../components/task/ListShow.vue'
 import Search from '../components/task/Search.vue'
 import Alter from '../components/user/Alter.vue'
+import Welcome from '../components/Welcome.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -50,6 +51,7 @@ const routes = [
   },
   { path: '/todo/register', component: Register },
   { path: '/todo/login', component: Login },
+  { path: '/todo/welcome', component: Welcome },
   { path: '*', component: NotFound }
 ]
 
@@ -60,7 +62,7 @@ const router = new VueRouter({
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
-  if (to.path === '/todo/login' || to.path === '/todo/register' || to.path === '/todo') return next();
+  if (to.path === '/todo/login' || to.path === '/todo/register' || to.path === '/todo' || to.path === '/todo/welcome') return next();
   // 去其他页面，需要登录，获取token
   // 保存要去的页面，登录成功后回来。
   window.sessionStorage.setItem('current', to.path);

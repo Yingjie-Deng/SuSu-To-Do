@@ -17,6 +17,8 @@ class UploadController extends Controller {
     $allowedType = ["image/jpeg", "image/jpg", "image/pjpeg", "image/x-png", "image/png"];
     $temp = explode(".", $_FILES['file']['name']);
     $extension = strtolower(end($temp));    // 获取后缀
+    // 对 utf-8 进行转码，以保证兼容性
+    $fileName = iconv('UTF-8', 'GBK', "{$tokenInfo['sub']}.$extension");
 
     if (
       in_array($_FILES['file']['type'], $allowedType)
@@ -25,7 +27,7 @@ class UploadController extends Controller {
       ) {
       if ($_FILES['file']['error'] > 0) {
         $this->response(['data' => ['imageUrl' => ""]], 400, "错误：{$_FILES['file']['error']}");
-      } elseif (move_uploaded_file($_FILES['file']['tmp_name'], TEMP . "{$tokenInfo['sub']}.$extension")) {
+      } elseif (move_uploaded_file($_FILES['file']['tmp_name'], TEMP . $fileName)) {
         $res['data']['imageURL'] = "http://localhost/todo/application/user/temp/{$tokenInfo['sub']}.$extension";
         $res['data']['temp_path'] = "/todo/application/user/temp/{$tokenInfo['sub']}.$extension";
         $this->response($res);

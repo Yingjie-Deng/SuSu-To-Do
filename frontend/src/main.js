@@ -55,6 +55,7 @@ import {
   Pagination,
   Option,
   Upload,
+  Image,
 
 } from 'element-ui';
 
@@ -91,6 +92,7 @@ Vue.use(Dialog)
 Vue.use(Pagination)
 Vue.use(Option)
 Vue.use(Upload)
+Vue.use(Image)
 
 Vue.component('SuButton', SuButton);
 Vue.component('SuDetail', SuDetail);

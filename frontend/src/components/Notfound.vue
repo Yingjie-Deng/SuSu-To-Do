@@ -1,7 +1,7 @@
 <template>
   <div class="not-found">
     <div class="not-found-box">
-      <h1 class="title">假装自己是个 404 </h1>
+      <h1 class="title">假装自己是个 404</h1>
       <div class="introduce">
         <div class="truly">
           <p class="truly-text">404</p>
@@ -17,15 +17,35 @@
         </div>
       </div>
     </div>
+    <div class="route-btns">
+      <el-button type="primary" @click="$router.push('/todo/home')"
+        >去 Home</el-button
+      >
+      <el-button type="success" @click="$router.push('/todo/login')"
+        >去登录</el-button
+      >
+      <el-button type="info" @click="$router.push('/')"
+        >未知的首页</el-button
+      >
+      <el-button type="warning" @click="$router.push('/todo')">未知的二级首页</el-button>
+      <el-button type="danger" @click="$router.push('/todo/alter')">危险按钮</el-button>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
-<style>
-
+<style lang="less" scoped>
+.not-found {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.route-btns {
+  margin-top: 30px;
+}
 </style>
