@@ -14,7 +14,7 @@ class HomeController extends Controller {
     $tokenInfo = $this->verifyToken();
 
     $res = $GLOBALS['config']['res'];
-    $pInfoM = new PInfoModel('personInfo');
+    $pInfoM = new PInfoModel('personinfo');
     $res['data']['pInfo'] = $pInfoM->getInfo($tokenInfo['sub']);
     // if ($newToken = $this->refresh($tokenInfo['sub'])) $res['data']['token'] = $newToken;
     $res['data']['token'] = $this->refresh($tokenInfo['sub']);
